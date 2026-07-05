@@ -315,6 +315,12 @@ function getContractPhone(contract) {
   return samplePhones[(numericCode - 1) % samplePhones.length];
 }
 
+function setBrowserPath(path) {
+  if (window.location.pathname !== path) {
+    window.history.replaceState({}, "", path);
+  }
+}
+
 export default function App() {
   const [store, setStore] = useState(loadInitialStore);
   const [user, setUser] = useState(loadInitialUser);
@@ -331,6 +337,16 @@ export default function App() {
   useEffect(() => {
     if (user) localStorage.setItem(STORAGE_USER, JSON.stringify(user));
     else localStorage.removeItem(STORAGE_USER);
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      setBrowserPath("/login");
+      return;
+    }
+    if (window.location.pathname === "/login" || window.location.pathname === "/") {
+      setBrowserPath(user.role === "student" ? "/student" : "/dashboard");
+    }
   }, [user]);
 
   useEffect(() => {
@@ -443,6 +459,7 @@ export default function App() {
     };
     setUser(session);
     setActivePage(session.role === "student" ? "student-home" : "dashboard");
+    setBrowserPath(session.role === "student" ? "/student" : "/dashboard");
     await upsert("users", {
       id: session.email.replace(/[.#$/[\]]/g, "-"),
       name: session.name,
@@ -457,6 +474,7 @@ export default function App() {
   function handleLogout() {
     setUser(null);
     setActivePage("dashboard");
+    setBrowserPath("/login");
   }
 
   if (!user) {
