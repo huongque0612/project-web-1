@@ -37,6 +37,8 @@ import {
   fetchCollection,
   firebaseProjectId,
   hasFirebaseConfig,
+  loginWithPassword,
+  logoutAuth,
   patchRecord,
   saveRecord,
   seedFirestore,
@@ -451,9 +453,13 @@ export default function App() {
 
   async function handleLogin(loginUser) {
     const normalizedEmail = normalizeUmtEmail(loginUser.email);
+    if (hasFirebaseConfig) {
+      await loginWithPassword(normalizedEmail, loginUser.password);
+    }
     const session = {
       ...loginUser,
       email: normalizedEmail,
+      password: "",
       id: normalizedEmail || uid("user"),
       name: loginUser.name || normalizedEmail.split("@")[0],
       lastLoginAt: today(),
@@ -474,6 +480,7 @@ export default function App() {
   }
 
   function handleLogout() {
+    logoutAuth().catch(() => {});
     setUser(null);
     setActivePage("dashboard");
     setBrowserPath("/login");
@@ -579,14 +586,25 @@ export default function App() {
 function LoginScreen({ onLogin, syncMessage }) {
   const [form, setForm] = useState({
     email: "admin@umt.edu.vn",
+    password: "",
     name: "Quản trị KTX",
     role: "admin",
     studentCode: "",
   });
+  const [loginError, setLoginError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function submit(event) {
+  async function submit(event) {
     event.preventDefault();
-    onLogin(form);
+    setLoginError("");
+    setIsSubmitting(true);
+    try {
+      await onLogin(form);
+    } catch (error) {
+      setLoginError("Email hoặc mật khẩu không đúng.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -618,6 +636,17 @@ function LoginScreen({ onLogin, syncMessage }) {
           </label>
 
           <label>
+            Mật khẩu
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={form.password}
+              onChange={(event) => setForm({ ...form, password: event.target.value })}
+            />
+          </label>
+
+          <label>
             Họ tên
             <input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
           </label>
@@ -642,8 +671,10 @@ function LoginScreen({ onLogin, syncMessage }) {
 
           <button className="primary-button" type="submit">
             <DoorOpen size={18} />
-            <span>Vào hệ thống</span>
+            <span>{isSubmitting ? "Đang đăng nhập..." : "Vào hệ thống"}</span>
           </button>
+
+          {loginError && <div className="login-note error">{loginError}</div>}
 
           <div className="login-note subtle">
             <Database size={16} />

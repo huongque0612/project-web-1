@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import {
   addDoc,
   collection,
@@ -28,7 +29,18 @@ export const hasFirebaseConfig = Boolean(
 export const firebaseProjectId = firebaseConfig.projectId;
 
 const app = hasFirebaseConfig ? initializeApp(firebaseConfig) : null;
+export const auth = app ? getAuth(app) : null;
 export const db = app ? getFirestore(app) : null;
+
+export async function loginWithPassword(email, password) {
+  if (!auth) return null;
+  return signInWithEmailAndPassword(auth, email, password);
+}
+
+export async function logoutAuth() {
+  if (!auth) return;
+  await signOut(auth);
+}
 
 export async function fetchCollection(collectionName) {
   if (!db) return [];
