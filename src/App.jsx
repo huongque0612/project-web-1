@@ -316,8 +316,10 @@ function getContractPhone(contract) {
 }
 
 function setBrowserPath(path) {
-  if (window.location.pathname !== path) {
-    window.history.replaceState({}, "", path);
+  const basePath = import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL.replace(/\/$/, "");
+  const nextPath = `${basePath}${path}`;
+  if (window.location.pathname !== nextPath) {
+    window.history.replaceState({}, "", nextPath);
   }
 }
 
