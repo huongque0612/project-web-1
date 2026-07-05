@@ -325,6 +325,10 @@ function setBrowserPath(path) {
   }
 }
 
+function assetPath(path) {
+  return `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+}
+
 export default function App() {
   const [store, setStore] = useState(loadInitialStore);
   const [user, setUser] = useState(loadInitialUser);
@@ -487,7 +491,7 @@ export default function App() {
   }
 
   if (!user) {
-    return <LoginScreen onLogin={handleLogin} syncMessage={syncMessage} />;
+    return <LoginScreen onLogin={handleLogin} />;
   }
 
   const isStudent = user.role === "student";
@@ -583,7 +587,7 @@ export default function App() {
   );
 }
 
-function LoginScreen({ onLogin, syncMessage }) {
+function LoginScreen({ onLogin }) {
   const [form, setForm] = useState({
     email: "admin@umt.edu.vn",
     password: "",
@@ -612,7 +616,7 @@ function LoginScreen({ onLogin, syncMessage }) {
       <section className="login-panel">
         <div className="login-copy">
           <div className="login-visual">
-            <img className="login-campus-image" src="/umt-building.png" alt="Tòa nhà UMT" />
+            <img className="login-campus-image" src={assetPath("/umt-building.png")} alt="Tòa nhà UMT" />
             <div className="login-title-overlay">
               <strong>KTX UMT</strong>
             </div>
@@ -676,10 +680,6 @@ function LoginScreen({ onLogin, syncMessage }) {
 
           {loginError && <div className="login-note error">{loginError}</div>}
 
-          <div className="login-note subtle">
-            <Database size={16} />
-            <span>{syncMessage}</span>
-          </div>
         </form>
       </section>
     </div>
@@ -2124,27 +2124,27 @@ function StudentAboutPage({ settings }) {
     {
       title: "Khu phòng ở hiện đại",
       text: "Phòng ở gọn gàng, có giường riêng, khu sinh hoạt chung và bố trí thuận tiện cho sinh viên học tập, nghỉ ngơi.",
-      image: "/about-room.png",
+      image: assetPath("/about-room.png"),
     },
     {
       title: "Nhà ăn sinh viên",
       text: "Nhà ăn phục vụ bữa sáng, trưa, tối với không gian sạch sẽ, thoáng và phù hợp nhu cầu sinh hoạt hằng ngày.",
-      image: "/about-dining.png",
+      image: assetPath("/about-dining.png"),
     },
     {
       title: "Phòng đọc sách",
       text: "Khu tự học yên tĩnh, có bàn đọc, ánh sáng tốt, phù hợp ôn bài, làm bài nhóm và học ngoài giờ.",
-      image: "/about-library.png",
+      image: assetPath("/about-library.png"),
     },
     {
       title: "Khu vệ sinh sạch sẽ",
       text: "Khu vệ sinh, phòng tắm được bố trí riêng, dễ sử dụng và được vệ sinh định kỳ để bảo đảm môi trường sống.",
-      image: "/about-bathroom.png",
+      image: assetPath("/about-bathroom.png"),
     },
     {
       title: "An ninh và quản lý số hóa",
       text: "Sinh viên theo dõi thông báo, hóa đơn, hợp đồng, phản ánh sửa chữa ngay trên hệ thống KTX UMT.",
-      image: "/umt-campus.png",
+      image: assetPath("/umt-campus.png"),
     },
   ];
 
@@ -2158,7 +2158,7 @@ function StudentAboutPage({ settings }) {
           onAction={() => setShowMoreAbout((value) => !value)}
         />
         <div className="about-hero">
-          <img src="/umt-building.png" alt="KTX UMT" />
+          <img src={assetPath("/umt-building.png")} alt="KTX UMT" />
           <div>
             <h3>Ký túc xá UMT hiện đại, tiện nghi</h3>
             <p>
