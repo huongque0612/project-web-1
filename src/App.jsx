@@ -465,7 +465,7 @@ export default function App() {
       email: normalizedEmail,
       password: "",
       id: normalizedEmail || uid("user"),
-      name: loginUser.name || normalizedEmail.split("@")[0],
+      name: loginUser.role === "admin" ? "Quản trị KTX" : normalizedEmail.split("@")[0],
       lastLoginAt: today(),
       status: "Hoạt động",
     };
@@ -591,7 +591,6 @@ function LoginScreen({ onLogin }) {
   const [form, setForm] = useState({
     email: "admin@umt.edu.vn",
     password: "",
-    name: "Quản trị KTX",
     role: "admin",
     studentCode: "",
   });
@@ -648,11 +647,6 @@ function LoginScreen({ onLogin }) {
               value={form.password}
               onChange={(event) => setForm({ ...form, password: event.target.value })}
             />
-          </label>
-
-          <label>
-            Họ tên
-            <input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
           </label>
 
           <label>
