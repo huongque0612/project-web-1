@@ -589,7 +589,7 @@ export default function App() {
 
 function LoginScreen({ onLogin }) {
   const [form, setForm] = useState({
-    email: "admin@umt.edu.vn",
+    email: "",
     password: "",
     role: "admin",
     studentCode: "",
