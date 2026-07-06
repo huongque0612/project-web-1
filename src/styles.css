@@ -1651,6 +1651,11 @@ td small {
   color: #2d5ea9;
 }
 
+.login-note.error {
+  background: #fff1f1;
+  color: var(--red);
+}
+
 @media (max-width: 1200px) {
   .stat-grid {
     grid-template-columns: repeat(3, minmax(160px, 1fr));
